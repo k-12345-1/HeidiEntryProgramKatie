@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swapfamily=IBM+Plex+Mono:wght@400;500https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swapdisplay=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface2: #F5F6FA;
+  --border: #E4E6F0;
+  --border-strong: #C8CCDF;
+  --text: #1A1F3A;
+  --text-mid: #4A5068;
+  --text-muted: #9298B0;
+  --blue: #4655B8; --blue-bg: #ECEFFE; --blue-border: #B0BAEC;
+  --teal: #3080B0; --teal-bg: #E8F3FC; --teal-border: #A0CCEC;
+  --purple: #6B55C0; --purple-bg: #F0EDFE; --purple-border: #C0B4EE;
+  --amber: #1E3A6E; --amber-bg: #E8EDF8; --amber-border: #9AAAD8;
+  --red: #B04060; --red-bg: #FCEAF0; --red-border: #E8A8C0;
+  --slate: #4A5068; --slate-bg: #F0F1F8;
+  --role-accent: #4655B8; --role-accent-bg: #ECEFFE; --role-accent-border: #B0BAEC; --role-accent-mid: #8A97DC;
+  --pill-r: 100px; --r: 8px; --r-sm: 4px;
+  --font: 'Plus Jakarta Sans', sans-serif; --mono: 'IBM Plex Mono', monospace;
+}
+[data-role="gp"]       { --role-accent:#4655B8; --role-accent-bg:#ECEFFE; --role-accent-border:#B0BAEC; --role-accent-mid:#8A97DC; }
+[data-role="physio"]   { --role-accent:#3080B0; --role-accent-bg:#E8F3FC; --role-accent-border:#A0CCEC; --role-accent-mid:#80B8D8; }
+[data-role="psych"]    { --role-accent:#6B55C0; --role-accent-bg:#F0EDFE; --role-accent-border:#C0B4EE; --role-accent-mid:#A898DC; }
+[data-role="dietitian"]{ --role-accent:#1E3A6E; --role-accent-bg:#E8EDF8; --role-accent-border:#9AAAD8; --role-accent-mid:#6A88C0; }
+[data-role="portal"]  { --role-accent:#5A6080; --role-accent-bg:#F2F3F8; --role-accent-border:#C8CCDF; --role-accent-mid:#9298B0; }
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#F5F5F5;font-family:var(--font);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em;}
+
+/* Layout */
+.shell{display:flex;height:100vh;overflow:hidden;}
+
+/* Sidebar */
+.sidebar{width:220px;min-width:220px;background:#FFFFFF;border-right:none;box-shadow:1px 0 0 0 #E4E6F0;display:flex;flex-direction:column;padding:24px 0 20px;overflow-y:auto;transition:border-color .25s;}
+.patient-card{margin:0 16px 20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.patient-avatar{width:32px;height:32px;background:var(--role-accent);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:500;margin-bottom:8px;transition:background .25s;}
+.patient-name{font-size:13px;font-weight:500;margin-bottom:2px;color:var(--text);}
+.patient-meta{font-size:11px;color:var(--text-muted);line-height:1.5;}
+.sidebar-section{padding:0 10px;margin-bottom:8px;}
+.sidebar-label{display:none;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:var(--r-sm);cursor:pointer;font-size:13px;color:var(--text-muted);transition:all .12s;border:none;background:none;width:100%;text-align:left;font-family:var(--font);}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:var(--role-accent-bg);color:var(--role-accent);font-weight:500;border-left:2px solid var(--role-accent);padding-left:8px;}
+.nav-icon{width:15px;height:15px;opacity:.55;flex-shrink:0;}
+.nav-item.active .nav-icon{opacity:1;}
+.role-switcher{margin:0 10px;margin-top:auto;padding-top:16px;border-top:1px solid var(--border);}
+.role-label{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;padding:0 4px;}
+.role-btn{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:var(--r-sm);cursor:pointer;font-size:12px;color:var(--text-muted);border:none;background:none;width:100%;text-align:left;transition:all .12s;margin-bottom:1px;font-family:var(--font);}
+.role-btn:hover{background:var(--surface2);color:var(--text-mid);}
+.role-btn.active{color:var(--role-accent);font-weight:500;}
+.role-badge{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0;}
+.role-badge.gp{background:var(--blue-bg);color:var(--blue);}
+.role-badge.physio{background:var(--teal-bg);color:var(--teal);}
+.role-badge.psych{background:var(--purple-bg);color:var(--purple);}
+.role-badge.dietitian{background:var(--amber-bg);color:var(--amber);}
+
+/* Main */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:#F5F5F5;}
+.topbar{background:var(--role-accent-bg);border-bottom:1px solid var(--role-accent-border);padding:10px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;transition:background .25s,border-color .25s;}
+.topbar-left{display:flex;align-items:center;gap:8px;}
+.breadcrumb{font-size:12px;color:var(--text-muted);}
+.breadcrumb span{color:var(--text-mid);font-weight:500;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.viewer-pill{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--pill-r);font-size:11.5px;font-weight:500;border:1px solid;}
+.viewer-pill.gp{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border);}
+.viewer-pill.physio{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-border);}
+.viewer-pill.psych{background:var(--purple-bg);color:var(--purple);border-color:var(--purple-border);}
+.viewer-pill.dietitian{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border);}
+.dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+
+/* Buttons — all same height */
+.btn-ghost,.btn-add-flag,.btn-break-glass{
+  padding:6px 14px;border-radius:var(--r-sm);font-size:12.5px;font-weight:500;
+  cursor:pointer;transition:all .12s;font-family:var(--font);
+  display:flex;align-items:center;gap:6px;line-height:1.4;
+  white-space:nowrap;
+}
+.btn-ghost{border:1px solid var(--border-strong);background:#FFFFFF;color:var(--text-mid);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+.btn-add-flag{border:1px solid var(--border-strong);background:#FFFFFF;color:var(--text-mid);}
+.btn-add-flag:hover{background:var(--surface2);color:var(--text);}
+.btn-break-glass{border:1px solid #E8A8B0;background:#FCEAEC;color:#B03040;}
+.btn-break-glass:hover{background:#f8d4d8;border-color:#B03040;}
+.btn-primary{padding:8px 18px;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;border:none;background:var(--role-accent);color:white;font-family:var(--font);transition:opacity .15s;}
+.btn-primary:hover{opacity:.88;}
+.btn-danger{padding:8px 18px;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;border:none;background:#B03040;color:white;font-family:var(--font);transition:opacity .15s;}
+.btn-danger:hover{opacity:.88;}
+
+/* Content */
+.content{padding:32px 36px;max-width:860px;width:100%;margin:0 auto;}
+
+/* Summary header */
+.summary-header{margin-bottom:28px;}
+.summary-title h1{font-size:19px;font-weight:500;letter-spacing:-.3px;margin-bottom:3px;}
+.summary-title p{font-size:12px;color:var(--text-muted);}
+.header-meta{display:none;}
+
+/* Visibility banner */
+.visibility-banner{border-radius:var(--r-sm);padding:9px 14px;margin-bottom:24px;font-size:12px;border:1px solid;display:flex;align-items:center;gap:8px;line-height:1.4;}
+.banner-icon{width:14px;height:14px;flex-shrink:0;}
+.banner-text strong{font-weight:500;}
+.visibility-banner.gp{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border);}
+.visibility-banner.physio{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-border);}
+.visibility-banner.psych{background:var(--purple-bg);color:var(--purple);border-color:var(--purple-border);}
+.visibility-banner.dietitian{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border);}
+.visibility-banner.role{background:var(--role-accent-bg);color:var(--role-accent);border-color:var(--role-accent-border);}
+
+/* Cards */
+.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:0;}
+.card{background:#FFFFFF;border-radius:8px;border:none;box-shadow:0 1px 3px rgba(0,0,0,0.08),0 0 0 1px rgba(0,0,0,0.04);overflow:hidden;}
+.card-full{grid-column:1/-1;}
+.card-header{padding:14px 18px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:none;background:none;}
+.card-header.role-tinted{background:none;border-bottom:none;}
+.card-title{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);}
+.badge-shared,.badge-restricted,.badge-role{display:none;}
+.badge-sensitive{display:inline-flex;font-size:10px;padding:2px 7px;border-radius:var(--pill-r);font-weight:500;background:#FCEAEC;color:#B03040;border:1px solid #E8A8B0;}
+.card-body{padding:0 18px 14px;}
+
+/* Data rows */
+.data-row{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid #F0F1F8;gap:12px;}
+.data-row:last-child{border-bottom:none;padding-bottom:0;}
+.data-row:first-child{padding-top:0;}
+.data-key{font-size:12.5px;color:var(--text-muted);min-width:100px;flex-shrink:0;}
+.data-val{font-size:12.5px;color:var(--text);text-align:right;font-weight:500;}
+.data-val.normal{color:#2A7A4A;}
+.data-val.caution{color:var(--text-mid);}
+.data-val.alert{color:#B03040;}
+
+/* Tags */
+.tag-group{display:flex;flex-wrap:wrap;gap:4px;}
+.tag{padding:2px 8px;border-radius:var(--pill-r);font-size:11px;font-weight:500;border:1px solid;}
+.tag-good{background:#EAF5EE;color:#2A7A4A;border-color:#A0D4B4;}
+.tag-bad,.tag-red{background:#FCEAEC;color:#B03040;border-color:#E8A8B0;}
+.tag-grey,.tag-teal,.tag-amber,.tag-blue,.tag-purple,.tag-slate{background:#F2F3F6;color:#6A7090;border-color:#E0E2EC;}
+
+/* Practitioner rows */
+.practitioner-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #F0F1F8;}
+.practitioner-row:last-child{border-bottom:none;}
+.practitioner-row:first-child{padding-top:0;}
+.prac-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0;}
+.prac-info{flex:1;}
+.prac-name{font-size:12.5px;font-weight:500;}
+.prac-role{font-size:11px;color:var(--text-muted);}
+.prac-last{font-size:10.5px;color:var(--text-muted);font-family:var(--mono);}
+
+/* Alert rows */
+.alert-row{display:flex;gap:10px;padding:9px 12px;border-radius:var(--r-sm);margin-bottom:8px;font-size:12px;line-height:1.5;background:#F7F8FC;border:1px solid #ECEEF8;border-left-width:3px;color:var(--text-mid);}
+.alert-row:last-child{margin-bottom:0;}
+.alert-row-icon{flex-shrink:0;margin-top:1px;opacity:.5;}
+.alert-row.warn{border-left-color:#E8A800;}
+.alert-row.info{border-left-color:#4655B8;}
+.alert-row.danger{border-left-color:#B03040;}
+
+/* Redacted */
+.redacted-block{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;display:flex;align-items:flex-start;gap:10px;}
+.redacted-icon{width:24px;height:24px;background:var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.redacted-text{font-size:12px;color:var(--text-muted);line-height:1.5;}
+.redacted-text strong{color:var(--text-mid);font-weight:500;}
+
+/* Timeline */
+.timeline-entry{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid #F0F1F8;font-size:12.5px;}
+.timeline-entry:last-child{border-bottom:none;}
+.timeline-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;border:1.5px solid;}
+.timeline-dot.blue{background:var(--blue-bg);border-color:var(--blue);}
+.timeline-dot.teal{background:var(--teal-bg);border-color:var(--teal);}
+.timeline-dot.amber{background:var(--amber-bg);border-color:var(--amber);}
+.timeline-dot.purple{background:var(--purple-bg);border-color:var(--purple);}
+.timeline-content{flex:1;}
+.timeline-title{font-weight:500;margin-bottom:2px;}
+.timeline-sub{color:var(--text-muted);font-size:11.5px;}
+
+/* Note entries */
+.note-entry{padding:10px 0;border-bottom:1px solid var(--border);font-size:12.5px;line-height:1.6;}
+.note-entry:last-child{border-bottom:none;}
+.note-meta{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.note-date{font-size:11px;color:var(--text-muted);font-family:var(--mono);}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(28,26,23,.5);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:14px;border:1px solid var(--border);width:480px;max-width:94vw;box-shadow:0 20px 60px rgba(0,0,0,.15);overflow:hidden;}
+.modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);}
+.modal-header h3{font-size:15px;font-weight:500;margin-bottom:4px;}
+.modal-header p{font-size:12.5px;color:var(--text-muted);}
+.modal-body{padding:20px 24px;}
+.modal-footer{padding:14px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--surface2);}
+
+/* Consent */
+.consent-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
+.consent-row:last-child{border-bottom:none;}
+.consent-label{font-size:13px;}
+.consent-desc{font-size:11.5px;color:var(--text-muted);margin-top:2px;}
+.toggle{position:relative;width:36px;height:20px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-track{position:absolute;inset:0;background:var(--border-strong);border-radius:10px;cursor:pointer;transition:background .2s;}
+.toggle input:checked+.toggle-track{background:var(--teal);}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;background:white;border-radius:50%;transition:transform .2s;pointer-events:none;}
+.toggle input:checked~.toggle-thumb{transform:translateX(16px);}
+
+/* Form elements */
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-mid);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
+.form-select,.form-textarea{width:100%;padding:9px 12px;border-radius:var(--r-sm);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color .15s;}
+.form-select:focus,.form-textarea:focus{border-color:var(--teal);}
+.form-textarea{resize:vertical;min-height:80px;line-height:1.5;}
+.radio-group{display:flex;flex-direction:column;gap:8px;}
+.radio-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--border);cursor:pointer;transition:all .15s;}
+.radio-item:hover,.radio-item.selected{border-color:var(--teal-border);background:var(--teal-bg);}
+.radio-item input[type=radio]{margin-top:2px;accent-color:var(--teal);flex-shrink:0;}
+.radio-item-label{font-size:13px;font-weight:500;}
+.radio-item-desc{font-size:11.5px;color:var(--text-muted);margin-top:1px;}
+.segmented{display:flex;background:var(--surface2);border-radius:var(--r-sm);border:1px solid var(--border);padding:3px;gap:2px;}
+.seg-btn{flex:1;padding:6px 10px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--text-muted);font-family:var(--font);transition:all .15s;text-align:center;}
+.seg-btn.active{background:var(--surface);color:var(--text);border:1px solid var(--border);}
+.bg-warning-banner{background:var(--red-bg);border:1px solid var(--red-border);border-radius:var(--r-sm);padding:12px 14px;display:flex;gap:10px;margin-bottom:16px;font-size:12.5px;color:var(--red);line-height:1.5;}
+
+/* Break glass accessed banner */
+.bg-accessed-banner{background:var(--red-bg);border:1px solid var(--red-border);border-radius:var(--r-sm);padding:10px 14px;font-size:12.5px;color:var(--red);display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+
+/* Data model */
+.dm-tier{border-radius:var(--r);border:1px solid var(--border);overflow:hidden;margin-bottom:12px;}
+.dm-tier-header{padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.dm-tier-body{padding:12px 16px;}
+.dm-tier-title{font-size:13px;font-weight:500;}
+.dm-tier-sub{font-size:11.5px;color:var(--text-muted);}
+.dm-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px;}
+.dm-item{padding:6px 10px;background:var(--surface);border-radius:var(--r-sm);border:1px solid var(--border);font-size:12px;}
+.dm-item-label{font-weight:500;margin-bottom:2px;}
+.dm-item-who{font-size:11px;color:var(--text-muted);}
+
+/* Permission matrix */
+.matrix-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.matrix-table th{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface2);text-align:left;}
+.matrix-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.matrix-table tr:last-child td{border-bottom:none;}
+.matrix-table tr:hover td{background:var(--surface2);}
+.perm-check{width:16px;height:16px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
+.perm-yes{background:#EAF5EE;color:#2A7A4A;border:1px solid #A0D4B4;}
+.perm-no{background:#F2F3F6;color:var(--text-muted);border:1px solid var(--border);}
+.perm-consent{background:#F2F3F6;color:#5A6080;border:1px solid #D0D3E0;}
+
+/* Anti-CYA */
+.principle-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;}
+.principle-num{width:26px;height:26px;background:var(--teal-bg);color:var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;}
+.principle-title{font-size:13.5px;font-weight:500;margin-bottom:5px;}
+.principle-body{font-size:12.5px;color:var(--text-mid);line-height:1.6;}
+
+/* Activity */
+.activity-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+.activity-item:last-child{border-bottom:none;}
+.activity-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px;}
+.activity-body{flex:1;}
+.activity-title{font-size:13px;font-weight:500;margin-bottom:3px;}
+.activity-desc{font-size:12.5px;color:var(--text-mid);line-height:1.5;margin-bottom:4px;}
+.activity-meta{display:flex;align-items:center;gap:8px;}
+.activity-time{font-size:11px;color:var(--text-muted);font-family:var(--mono);}
+.activity-tag{font-size:10.5px;font-weight:500;padding:2px 7px;border-radius:var(--pill-r);border:1px solid;}
+.at-view,.at-flag,.at-consent,.at-conflict{background:#F2F3F6;color:#5A6080;border-color:#D0D3E0;}
+.at-breakglass{background:#FCEAEC;color:#B03040;border-color:#E8A8B0;}
+
+/* Scribe modal */
+.extraction-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.extraction-row:last-child{border-bottom:none;}
+.extraction-field{font-size:12.5px;font-weight:500;min-width:110px;flex-shrink:0;padding-top:2px;}
+.extraction-value{flex:1;}
+.extraction-raw{font-size:11.5px;color:var(--text-muted);font-family:var(--mono);margin-bottom:4px;}
+.extraction-parsed{font-size:13px;font-weight:500;color:var(--text);}
+.extraction-context{font-size:11px;color:var(--text-muted);margin-top:3px;line-height:1.4;}
+.extraction-actions{display:flex;gap:6px;flex-shrink:0;align-items:center;}
+.btn-confirm{padding:4px 12px;border-radius:var(--r-sm);font-size:11.5px;font-weight:500;cursor:pointer;border:1px solid #A0D4B4;background:#EAF5EE;color:#2A7A4A;font-family:var(--font);transition:all .15s;}
+.btn-confirm:hover{background:#D4EDDB;}
+.btn-reject{padding:4px 12px;border-radius:var(--r-sm);font-size:11.5px;font-weight:500;cursor:pointer;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-muted);font-family:var(--font);transition:all .15s;}
+.btn-reject:hover{background:var(--surface2);}
+.extraction-confidence{font-size:10.5px;padding:2px 7px;border-radius:var(--pill-r);font-weight:500;}
+.conf-high{background:#EAF5EE;color:#2A7A4A;border:1px solid #A0D4B4;}
+.conf-mid{background:#F5F6FA;color:#5A6080;border:1px solid #D0D3E0;}
+
+/* Empty state */
+.empty-state{border:1.5px dashed var(--border-strong);border-radius:var(--r);padding:28px 24px;text-align:center;color:var(--text-muted);background:var(--surface2);margin-bottom:20px;}
+.empty-state-icon{width:36px;height:36px;background:var(--surface);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+.empty-state h3{font-size:14px;font-weight:500;color:var(--text-mid);margin-bottom:6px;}
+.empty-state p{font-size:12.5px;line-height:1.6;max-width:380px;margin:0 auto 16px;}
+
+/* Page / role visibility */
+.page{display:none;}
+.page.active{display:block;}
+.role-section{display:none;}
+
+/* Scrollbar */
+::-webkit-scrollbar{display:none;}*{scrollbar-width:none;}
+</style>
+<style>
+
+
+
+</style>
+</head>
+<body>
+
+<div class="shell" data-role="gp">
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="patient-card" style="margin-top:0">
+    <div class="patient-avatar" id="sidebar-avatar">KR</div>
+    <div class="patient-name">Katie Robinson</div>
+    <div class="patient-meta">DOB 23 Oct 2004 · F<br>MRN 00481-C · Active</div>
+  </div>
+  <div class="sidebar-section">
+    <button class="nav-item active" onclick="showPage('summary')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1.5" fill="currentColor" opacity=".7"/><rect x="9" y="2" width="5" height="5" rx="1.5" fill="currentColor" opacity=".4"/><rect x="2" y="9" width="5" height="5" rx="1.5" fill="currentColor" opacity=".4"/><rect x="9" y="9" width="5" height="5" rx="1.5" fill="currentColor" opacity=".7"/></svg>
+      Shared Summary
+    </button>
+    <button class="nav-item" onclick="showPage('activitylog')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Activity Log
+    </button>
+    <button class="nav-item" onclick="showPage('datamodel')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Data Model
+    </button>
+    <button class="nav-item" onclick="showPage('permissions')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="4" y="7" width="8" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 7V5C5.5 3.6 6.3 2.5 8 2.5S10.5 3.6 10.5 5V7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Permission Model
+    </button>
+    <button class="nav-item" onclick="showPage('cya')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v4M8 11v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Anti-CYA Design
+    </button>
+    <button class="nav-item" onclick="showPage('portal')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 13c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Patient Portal
+    </button>
+  </div>
+  <div class="role-switcher" id="role-switcher">
+    <div class="role-label">View as</div>
+    <button class="role-btn active" onclick="setRole('gp')"><span class="role-badge gp">GP</span>Dr. Jacob Tait</button>
+    <button class="role-btn" onclick="setRole('physio')"><span class="role-badge physio">PT</span>Tom Kelly</button>
+    <button class="role-btn" onclick="setRole('psych')"><span class="role-badge psych">Ps</span>Dr. Yu Liu</button>
+    <button class="role-btn" onclick="setRole('dietitian')"><span class="role-badge dietitian">Dt</span>Waleed Mussa</button>
+  </div>
+</nav>
+
+<!-- Main -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="breadcrumb">Patients / <span>Katie Robinson</span> / Shared Summary</div>
+    </div>
+    <div class="topbar-right">
+      <div class="viewer-pill gp" id="viewer-pill"><div class="dot"></div><span id="viewer-label">Viewing as: Dr. Jacob Tait (GP)</span></div>
+      <button class="btn-add-flag" onclick="openAddFlagModal()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 2v9M2 6.5h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Add flag
+      </button>
+      <button class="btn-add-flag" onclick="openScribeModal()" id="scribe-btn" style="position:relative">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M4 6.5l2 2 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Review AI extractions
+        <span id="scribe-badge" style="position:absolute;top:-4px;right:-4px;width:14px;height:14px;background:#B03040;border-radius:50%;color:white;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600">2</span>
+      </button>
+      <button class="btn-break-glass" onclick="openBreakGlass()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="3" y="6" width="7" height="5.5" rx="1.2" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 6V4.5a2 2 0 014 0V6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="6.5" cy="8.5" r=".8" fill="currentColor"/></svg>
+        Break glass
+      </button>
+      <div style="position:relative" id="overflow-wrap">
+        <button class="btn-ghost" onclick="toggleOverflow()" id="overflow-btn" title="More options" style="justify-content:center">
+          <svg width="13" height="18" viewBox="0 0 13 18" fill="none"><circle cx="2.5" cy="9" r="1.1" fill="currentColor"/><circle cx="6.5" cy="9" r="1.1" fill="currentColor"/><circle cx="10.5" cy="9" r="1.1" fill="currentColor"/></svg>
+        </button>
+        <div id="overflow-menu" style="display:none;position:absolute;right:0;top:38px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r);box-shadow:0 4px 16px rgba(0,0,0,.08);min-width:180px;z-index:50;overflow:hidden">
+          <button onclick="openModal();closeOverflow()" style="display:flex;align-items:center;gap:8px;width:100%;padding:10px 14px;background:none;border:none;font-size:13px;font-family:var(--font);color:var(--text-mid);cursor:pointer;text-align:left;border-bottom:1px solid var(--border)">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="6" width="9" height="5.5" rx="1.2" stroke="currentColor" stroke-width="1.2"/><path d="M4 6V4.5a2.5 2.5 0 015 0V6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Consent settings
+          </button>
+          <button onclick="toggleEmptyState();closeOverflow()" style="display:flex;align-items:center;gap:8px;width:100%;padding:10px 14px;background:none;border:none;font-size:13px;font-family:var(--font);color:var(--text-mid);cursor:pointer;text-align:left">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="2" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 6.5h4M6.5 4.5v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            New patient view
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+<!-- ═══ SUMMARY PAGE ═══ -->
+<div class="page active" id="page-summary">
+  <div class="summary-header">
+    <div class="summary-title">
+      <h1>Katie Robinson</h1>
+      <p>Shared clinical summary · Updated 18 Mar 2026 · 4 treating practitioners</p>
+    </div>
+  </div>
+
+  <div id="empty-state-panel" style="display:none">
+    <div class="empty-state">
+      <div class="empty-state-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="var(--text-muted)" stroke-width="1.3"/><path d="M8 5v4M8 11v.5" stroke="var(--text-muted)" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+      <h3>No consent configured — new patient</h3>
+      <p>Shared Clinical Facts are visible. All Tier 2 and Tier 3 data is invisible until the patient configures it — at appointment or via the patient portal.</p>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-ghost" onclick="document.getElementById('empty-state-panel').style.display='none'">Dismiss</button>
+        <button class="btn-primary" onclick="openModal();document.getElementById('empty-state-panel').style.display='none'">Configure consent now</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="visibility-banner gp" id="vis-banner">
+    <svg class="banner-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v4M8 11v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <div class="banner-text" id="vis-banner-text"><strong>GP view</strong> — Shared facts, conflicts, and your role-filtered data. Mental health content visible only with patient consent.</div>
+  </div>
+
+  <!-- Shared: conditions + medications -->
+  <div class="section-grid">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Active conditions</div></div>
+      <div class="card-body">
+        <div class="tag-group">
+          <span class="tag tag-red">Type 2 diabetes</span>
+          <span class="tag tag-grey">Low back pain</span>
+          <span class="tag tag-grey">Generalised anxiety</span>
+          <span class="tag tag-grey">Hyperlipidaemia</span>
+          <span class="tag tag-grey">Obese BMI 34.2</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Medications &amp; allergies</div></div>
+      <div class="card-body">
+        <div class="data-row"><div class="data-key">Metformin</div><div class="data-val">500 mg BD</div></div>
+        <div class="data-row"><div class="data-key">Rosuvastatin</div><div class="data-val">10 mg QN</div></div>
+        <div class="data-row"><div class="data-key">Sertraline</div><div class="data-val">100 mg mane</div></div>
+        <div class="data-row"><div class="data-key">Allergies</div><div class="data-val alert">Penicillin · Codeine</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared: conflicts -->
+  <div class="card" style="margin-top:20px">
+    <div class="card-header"><div class="card-title">Flagged conflicts &amp; alerts</div></div>
+    <div class="card-body" style="padding-top:8px">
+      <div class="alert-row warn">
+        <svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L13 12H1L7 1.5Z" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M7 5.5v3M7 10v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <div><strong>Conflicting dietary advice</strong> — Physio (4 Mar) and Dietitian (11 Mar) gave diverging caloric guidance. Auto-detected by conflict engine.</div>
+      </div>
+      <div class="alert-row info">
+        <svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3.5M7 10v.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <div><strong>Mobility restriction active</strong> — Loaded spinal flexion restricted by Physio. Relevant for exercise referrals.</div>
+      </div>
+      <div class="alert-row danger">
+        <svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5l4 4M9 5L5 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <div><strong>Sertraline + weight targets</strong> — Rapid weight loss may interact with anxiety management. Coordinate before setting targets.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Role-specific sections (team + interactions at bottom of each) -->
+  <div style="margin-top:20px">
+
+    <!-- GP -->
+    <div class="role-section" id="rs-gp">
+      <div class="section-grid">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Investigations</div></div>
+          <div class="card-body">
+            <div class="data-row"><div class="data-key">HbA1c</div><div class="data-val caution">7.2% (↓ from 7.8%)</div><div style="font-size:10px;color:var(--text-muted);flex-shrink:0">HealthLink · 15 Mar</div></div>
+            <div class="data-row"><div class="data-key">eGFR</div><div class="data-val normal">74 mL/min</div><div style="font-size:10px;color:var(--text-muted);flex-shrink:0">HealthLink · 15 Mar</div></div>
+            <div class="data-row"><div class="data-key">LDL-C</div><div class="data-val caution">2.8 mmol/L</div><div style="font-size:10px;color:var(--text-muted);flex-shrink:0">HealthLink · 15 Mar</div></div>
+            <div class="data-row"><div class="data-key">BP</div><div class="data-val caution">134/86 mmHg</div><div style="font-size:10px;color:var(--text-muted);flex-shrink:0">Heidi scribe · 18 Mar</div></div>
+            <div class="data-row"><div class="data-key">BMI</div><div class="data-val caution">34.2 kg/m²</div><div style="font-size:10px;color:var(--text-muted);flex-shrink:0">Heidi scribe · 18 Mar</div></div>
+            <div class="data-row"><div class="data-key">Weight trend</div><div class="data-val normal">−2.1 kg (3 mo)</div><div style="font-size:10px;color:var(--text-muted);flex-shrink:0">Computed</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Mental health context <span class="badge-sensitive" style="margin-left:6px">Patient consented</span></div></div>
+          <div class="card-body">
+            <div class="data-row"><div class="data-key">PHQ-9</div><div class="data-val caution">11 (moderate)</div><div style="font-size:10px;color:var(--text-muted);flex-shrink:0">Dr. Rosen · 10 Mar</div></div>
+            <div class="data-row"><div class="data-key">GAD-7</div><div class="data-val caution">14 (moderate)</div><div style="font-size:10px;color:var(--text-muted);flex-shrink:0">Dr. Rosen · 10 Mar</div></div>
+            <div class="data-row"><div class="data-key">Sleep</div><div class="data-val caution">Disrupted</div><div style="font-size:10px;color:var(--text-muted);flex-shrink:0">Dr. Rosen · 10 Mar</div></div>
+            <div class="data-row"><div class="data-key">Psych flag</div><div class="data-val" style="font-size:11.5px;color:var(--text-mid);text-align:left;font-weight:400">Anxiety intersecting with pain. Caution with exercise referrals.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="section-grid" style="margin-top:20px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Treating team</div></div>
+          <div class="card-body">
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">JT</div><div class="prac-info"><div class="prac-name">Dr. Jacob Tait</div><div class="prac-role">GP · Lead clinician</div></div><div class="prac-last">18 Mar</div></div>
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">TK</div><div class="prac-info"><div class="prac-name">Tom Kelly</div><div class="prac-role">Physiotherapist</div></div><div class="prac-last">12 Mar</div></div>
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">YL</div><div class="prac-info"><div class="prac-name">Dr. Yu Liu</div><div class="prac-role">Psychologist</div></div><div class="prac-last">10 Mar</div></div>
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">WM</div><div class="prac-info"><div class="prac-name">Waleed Mussa</div><div class="prac-role">Dietitian</div></div><div class="prac-last">11 Mar</div></div>
+            <div class="practitioner-row" style="opacity:.5"><div class="prac-avatar" style="background:#F5F6FA;color:#9298B0;border:1px dashed #C8CCDF">JO</div><div class="prac-info"><div class="prac-name" style="color:var(--text-muted)">Dr. James Okafor</div><div class="prac-role">GP Locum · <span style="color:#B03040">Access expired</span></div></div><div class="prac-last" style="color:var(--text-muted)">Oct 25</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Recent interactions</div></div>
+          <div class="card-body">
+            <div class="timeline-entry"><div class="timeline-dot blue"></div><div class="timeline-content"><div class="timeline-title">GP review — J. Tait</div><div class="timeline-sub">18 Mar · HbA1c 7.2%, BP 134/86</div></div></div>
+            <div class="timeline-entry"><div class="timeline-dot amber"></div><div class="timeline-content"><div class="timeline-title">Dietitian consult — W. Mussa</div><div class="timeline-sub">11 Mar · Mediterranean plan initiated</div></div></div>
+            <div class="timeline-entry"><div class="timeline-dot teal"></div><div class="timeline-content"><div class="timeline-title">Physio session — T. Kelly</div><div class="timeline-sub">12 Mar · L4–L5 mobility work</div></div></div>
+            <div class="timeline-entry"><div class="timeline-dot purple"></div><div class="timeline-content"><div class="timeline-title">Psychology — Y. Liu</div><div class="timeline-sub">10 Mar · Session content private</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Physio -->
+    <div class="role-section" id="rs-physio">
+      <div class="section-grid">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Functional status</div></div>
+          <div class="card-body">
+            <div class="data-row"><div class="data-key">Primary complaint</div><div class="data-val">L4–L5 disc bulge</div></div>
+            <div class="data-row"><div class="data-key">Pain NRS (avg)</div><div class="data-val caution">5–6 / 10</div></div>
+            <div class="data-row"><div class="data-key">Loaded flexion</div><div class="data-val alert">Restricted ⚠</div></div>
+            <div class="data-row"><div class="data-key">Gait</div><div class="data-val normal">Unassisted, antalgic</div></div>
+            <div class="data-row"><div class="data-key">Goal</div><div class="data-val">Return to walking 5km</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Relevant flags</div></div>
+          <div class="card-body" style="padding-top:8px">
+            <div class="alert-row warn"><svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L13 12H1L7 1.5Z" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M7 5.5v3M7 10v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><div>Diabetic neuropathy risk — adjust load targets.</div></div>
+            <div class="alert-row info"><svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3.5M7 10v.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><div>Elevated anxiety — gentle pacing recommended by Psych.</div></div>
+            <div class="redacted-block" style="margin-top:8px"><div class="redacted-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="3" y="7" width="8" height="5" rx="1.5" stroke="var(--text-muted)" stroke-width="1.2"/><path d="M5 7V5a2 2 0 014 0v2" stroke="var(--text-muted)" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="redacted-text"><strong>Mental health detail not visible to this role.</strong> Relevant flags surfaced above.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="section-grid" style="margin-top:20px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Treating team</div></div>
+          <div class="card-body">
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">JT</div><div class="prac-info"><div class="prac-name">Dr. Jacob Tait</div><div class="prac-role">GP · Lead clinician</div></div><div class="prac-last">18 Mar</div></div>
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">TK</div><div class="prac-info"><div class="prac-name">Tom Kelly</div><div class="prac-role">Physiotherapist</div></div><div class="prac-last">12 Mar</div></div>
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">YL</div><div class="prac-info"><div class="prac-name">Dr. Yu Liu</div><div class="prac-role">Psychologist</div></div><div class="prac-last">10 Mar</div></div>
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">WM</div><div class="prac-info"><div class="prac-name">Waleed Mussa</div><div class="prac-role">Dietitian</div></div><div class="prac-last">11 Mar</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Recent interactions</div></div>
+          <div class="card-body">
+            <div class="timeline-entry"><div class="timeline-dot blue"></div><div class="timeline-content"><div class="timeline-title">GP review — J. Tait</div><div class="timeline-sub">18 Mar · HbA1c 7.2%, BP 134/86</div></div></div>
+            <div class="timeline-entry"><div class="timeline-dot teal"></div><div class="timeline-content"><div class="timeline-title">Physio session — T. Kelly</div><div class="timeline-sub">12 Mar · L4–L5 mobility work</div></div></div>
+            <div class="timeline-entry"><div class="timeline-dot amber"></div><div class="timeline-content"><div class="timeline-title">Dietitian consult — W. Mussa</div><div class="timeline-sub">11 Mar · Mediterranean plan initiated</div></div></div>
+            <div class="timeline-entry"><div class="timeline-dot purple"></div><div class="timeline-content"><div class="timeline-title">Psychology — Y. Liu</div><div class="timeline-sub">10 Mar · Session content private</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Psych -->
+    <div class="role-section" id="rs-psych">
+      <div class="section-grid">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Clinical context from team</div></div>
+          <div class="card-body">
+            <div class="data-row"><div class="data-key">PHQ-9</div><div class="data-val caution">11 (moderate)</div></div>
+            <div class="data-row"><div class="data-key">GAD-7</div><div class="data-val caution">14 (moderate)</div></div>
+            <div class="data-row"><div class="data-key">Sleep</div><div class="data-val caution">Disrupted</div></div>
+            <div class="data-row"><div class="data-key">Chronic pain</div><div class="data-val">L4–L5, ongoing</div></div>
+            <div class="data-row"><div class="data-key">Sertraline</div><div class="data-val">100 mg — GP-managed</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">My clinical flags (shared)</div></div>
+          <div class="card-body">
+            <div class="note-entry"><div class="note-meta"><span class="tag tag-grey" style="font-size:10px">Flag to GP</span><span class="note-date">10 Mar</span></div>Stress–pain amplification cycle present. Caution with aggressive exercise escalation.</div>
+            <div class="note-entry"><div class="note-meta"><span class="tag tag-grey" style="font-size:10px">Flag to Dietitian</span><span class="note-date">10 Mar</span></div>Rapid weight loss targets may worsen anxiety. Gradual approach recommended.</div>
+            <div class="redacted-block" style="margin-top:10px"><div class="redacted-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M2 12L12 2" stroke="var(--text-muted)" stroke-width="1.3" stroke-linecap="round"/></svg></div><div class="redacted-text"><strong>Session notes live in your practice system.</strong> Only flags above are stored here.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="section-grid" style="margin-top:20px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Treating team</div></div>
+          <div class="card-body">
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">JT</div><div class="prac-info"><div class="prac-name">Dr. Jacob Tait</div><div class="prac-role">GP · Lead clinician</div></div><div class="prac-last">18 Mar</div></div>
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">TK</div><div class="prac-info"><div class="prac-name">Tom Kelly</div><div class="prac-role">Physiotherapist</div></div><div class="prac-last">12 Mar</div></div>
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">YL</div><div class="prac-info"><div class="prac-name">Dr. Yu Liu</div><div class="prac-role">Psychologist</div></div><div class="prac-last">10 Mar</div></div>
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">WM</div><div class="prac-info"><div class="prac-name">Waleed Mussa</div><div class="prac-role">Dietitian</div></div><div class="prac-last">11 Mar</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Recent interactions</div></div>
+          <div class="card-body">
+            <div class="timeline-entry"><div class="timeline-dot blue"></div><div class="timeline-content"><div class="timeline-title">GP review — J. Tait</div><div class="timeline-sub">18 Mar · HbA1c 7.2%, BP 134/86</div></div></div>
+            <div class="timeline-entry"><div class="timeline-dot purple"></div><div class="timeline-content"><div class="timeline-title">Psychology — Y. Liu</div><div class="timeline-sub">10 Mar · Session content private</div></div></div>
+            <div class="timeline-entry"><div class="timeline-dot teal"></div><div class="timeline-content"><div class="timeline-title">Physio session — T. Kelly</div><div class="timeline-sub">12 Mar · L4–L5 mobility work</div></div></div>
+            <div class="timeline-entry"><div class="timeline-dot amber"></div><div class="timeline-content"><div class="timeline-title">Dietitian consult — W. Mussa</div><div class="timeline-sub">11 Mar · Mediterranean plan initiated</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dietitian -->
+    <div class="role-section" id="rs-dietitian">
+      <div class="section-grid">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Nutrition &amp; metabolic</div></div>
+          <div class="card-body">
+            <div class="data-row"><div class="data-key">HbA1c</div><div class="data-val caution">7.2%</div></div>
+            <div class="data-row"><div class="data-key">BMI</div><div class="data-val caution">34.2 kg/m²</div></div>
+            <div class="data-row"><div class="data-key">Weight trend</div><div class="data-val normal">−2.1 kg (3 mo)</div></div>
+            <div class="data-row"><div class="data-key">LDL-C</div><div class="data-val caution">2.8 mmol/L</div></div>
+            <div class="data-row"><div class="data-key">Plan active</div><div class="data-val">Mediterranean, 1600 kcal</div></div>
+            <div class="data-row"><div class="data-key">Metformin</div><div class="data-val">500 mg BD — note timing</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Coordination alerts</div></div>
+          <div class="card-body" style="padding-top:8px">
+            <div class="alert-row warn"><svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L13 12H1L7 1.5Z" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M7 5.5v3M7 10v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><div>Conflicting caloric advice with Physio — reconciliation needed before next session.</div></div>
+            <div class="alert-row info"><svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3.5M7 10v.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><div>Psych flags: avoid rapid weight loss targets — anxiety risk.</div></div>
+            <div class="redacted-block" style="margin-top:8px"><div class="redacted-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="3" y="7" width="8" height="5" rx="1.5" stroke="var(--text-muted)" stroke-width="1.2"/><path d="M5 7V5a2 2 0 014 0v2" stroke="var(--text-muted)" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="redacted-text"><strong>Mental health detail not visible to this role.</strong> Relevant flags surfaced above.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="section-grid" style="margin-top:20px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Treating team</div></div>
+          <div class="card-body">
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">JT</div><div class="prac-info"><div class="prac-name">Dr. Jacob Tait</div><div class="prac-role">GP · Lead clinician</div></div><div class="prac-last">18 Mar</div></div>
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">TK</div><div class="prac-info"><div class="prac-name">Tom Kelly</div><div class="prac-role">Physiotherapist</div></div><div class="prac-last">12 Mar</div></div>
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">YL</div><div class="prac-info"><div class="prac-name">Dr. Yu Liu</div><div class="prac-role">Psychologist</div></div><div class="prac-last">10 Mar</div></div>
+            <div class="practitioner-row"><div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">WM</div><div class="prac-info"><div class="prac-name">Waleed Mussa</div><div class="prac-role">Dietitian</div></div><div class="prac-last">11 Mar</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Recent interactions</div></div>
+          <div class="card-body">
+            <div class="timeline-entry"><div class="timeline-dot blue"></div><div class="timeline-content"><div class="timeline-title">GP review — J. Tait</div><div class="timeline-sub">18 Mar · HbA1c 7.2%, BP 134/86</div></div></div>
+            <div class="timeline-entry"><div class="timeline-dot amber"></div><div class="timeline-content"><div class="timeline-title">Dietitian consult — W. Mussa</div><div class="timeline-sub">11 Mar · Mediterranean plan initiated</div></div></div>
+            <div class="timeline-entry"><div class="timeline-dot teal"></div><div class="timeline-content"><div class="timeline-title">Physio session — T. Kelly</div><div class="timeline-sub">12 Mar · L4–L5 mobility work</div></div></div>
+            <div class="timeline-entry"><div class="timeline-dot purple"></div><div class="timeline-content"><div class="timeline-title">Psychology — Y. Liu</div><div class="timeline-sub">10 Mar · Session content private</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- end page-summary -->
+
+<!-- ═══ ACTIVITY LOG ═══ -->
+<div class="page" id="page-activitylog">
+  <div class="summary-header"><div class="summary-title"><h1>Activity Log</h1><p>All access, flags, consent changes, and overrides — patient-visible audit trail</p></div></div>
+  <div class="bg-accessed-banner"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="3" y="7" width="8" height="5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 7V5a2 2 0 014 0v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Break glass access was used once on 2 Feb 2026. Reason logged. Patient notified by SMS within 24 hrs.</div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Full access history</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn-ghost" style="font-size:11px;padding:3px 10px">Export CSV</button>
+      </div>
+    </div>
+    <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <input type="text" placeholder="Search by practitioner, event type…" style="flex:1;min-width:160px;padding:6px 10px;border:1px solid var(--border-strong);border-radius:var(--r-sm);font-size:12.5px;font-family:var(--font);color:var(--text);outline:none">
+      <select style="padding:6px 10px;border:1px solid var(--border-strong);border-radius:var(--r-sm);font-size:12.5px;font-family:var(--font);color:var(--text-mid);background:var(--surface)"><option>All event types</option><option>View</option><option>Flag</option><option>Consent change</option><option>Break glass</option><option>Access expired</option></select>
+      <select style="padding:6px 10px;border:1px solid var(--border-strong);border-radius:var(--r-sm);font-size:12.5px;font-family:var(--font);color:var(--text-mid);background:var(--surface)"><option>All time</option><option>Last 30 days</option><option>Last 90 days</option><option>Last 12 months</option></select>
+    </div>
+    <div class="card-body">
+      <div class="activity-item"><div class="activity-avatar" style="background:#F2F3F6;color:#5A6080">JT</div><div class="activity-body"><div class="activity-title">Summary accessed</div><div class="activity-desc">Dr. Jacob Tait (GP) viewed shared summary including consented mental health scores. Lab values via HealthLink; BP and BMI from Heidi scribe session.</div><div class="activity-meta"><span class="activity-time">18 Mar 2026 · 09:14</span><span class="activity-tag at-view">View</span></div></div></div>
+      <div class="activity-item"><div class="activity-avatar" style="background:#F2F3F6;color:#5A6080">⚙</div><div class="activity-body"><div class="activity-title">Conflict auto-detected — system</div><div class="activity-desc">Diverging caloric guidance detected between T. Kelly (Physio, 4 Mar: high-load rehab, increased energy intake) and W. Mussa (Dietitian, 11 Mar: 1600 kcal Mediterranean deficit). Semantic mismatch on Energy/load domain. Surfaced to all treating practitioners.</div><div class="activity-meta"><span class="activity-time">11 Mar 2026 · 15:02</span><span class="activity-tag at-conflict">Conflict detected</span></div></div></div>
+      <div class="activity-item"><div class="activity-avatar" style="background:#F2F3F6;color:#5A6080">WM</div><div class="activity-body"><div class="activity-title">Summary accessed</div><div class="activity-desc">Waleed Mussa (Dietitian) viewed metabolic markers and coordination alerts. Psych scores, diagnosis detail, and lab results withheld — patient consent not granted for those fields.</div><div class="activity-meta"><span class="activity-time">11 Mar 2026 · 11:30</span><span class="activity-tag at-view">View</span></div></div></div>
+      <div class="activity-item"><div class="activity-avatar" style="background:#F2F3F6;color:#5A6080">YL</div><div class="activity-body"><div class="activity-title">Clinical flag raised — Dr. Yu Liu</div><div class="activity-desc">Flag category: Care coordination. Content: "Anxiety intersecting with pain — advise caution with aggressive exercise escalation." Recipient: GP. Session content not included.</div><div class="activity-meta"><span class="activity-time">10 Mar 2026 · 16:45</span><span class="activity-tag at-flag">Flag</span></div></div></div>
+      <div class="activity-item"><div class="activity-avatar" style="background:#F2F3F6;color:#5A6080">KR</div><div class="activity-body"><div class="activity-title">Consent updated — patient</div><div class="activity-desc">Katie Robinson enabled: PHQ-9/GAD-7 scores → Dr. Jacob Tait (GP). Psych diagnosis detail remains off. Updated via patient portal.</div><div class="activity-meta"><span class="activity-time">8 Mar 2026 · 08:52</span><span class="activity-tag at-consent">Consent change</span></div></div></div>
+      <div class="activity-item"><div class="activity-avatar" style="background:#FCEAEC;color:#B03040">⚠</div><div class="activity-body"><div class="activity-title">Break glass — emergency override</div><div class="activity-desc">Dr. Elise Dumont (ED Registrar, Royal Melbourne) accessed medications and allergy record. Reason: "Patient presented unconscious, urgent allergy check required pre-anaesthesia." Patient notified by SMS 2 Feb 02:58.</div><div class="activity-meta"><span class="activity-time">2 Feb 2026 · 02:38</span><span class="activity-tag at-breakglass">Break glass</span></div></div></div>
+      <div class="activity-item"><div class="activity-avatar" style="background:#F2F3F6;color:#9298B0">⏱</div><div class="activity-body"><div class="activity-title">Access expired — Dr. James Okafor</div><div class="activity-desc">GP Locum treating relationship lapsed after 90 days with no recorded contact. Access automatically removed. Patient notified.</div><div class="activity-meta"><span class="activity-time">14 Jan 2026 · 00:00</span><span class="activity-tag" style="background:#F2F3F6;color:#9298B0;border-color:#D0D3E0">Access expired</span></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DATA MODEL ═══ -->
+<div class="page" id="page-datamodel">
+  <div class="summary-header"><div class="summary-title"><h1>Data Model</h1><p>What is summarised, what is excluded, and who controls visibility</p></div></div>
+  <div style="margin-bottom:24px">
+    <div class="dm-tier"><div class="dm-tier-header"><div><div class="dm-tier-title">Tier 1 — Shared clinical facts</div><div class="dm-tier-sub">Visible to all treating practitioners. No opt-out — clinically necessary.</div></div></div><div class="dm-tier-body"><div class="dm-items"><div class="dm-item"><div class="dm-item-label">Active diagnoses</div><div class="dm-item-who">All roles · ICD codes only</div></div><div class="dm-item"><div class="dm-item-label">Current medications</div><div class="dm-item-who">All roles · Name + dose</div></div><div class="dm-item"><div class="dm-item-label">Allergies</div><div class="dm-item-who">All roles · Safety-critical</div></div><div class="dm-item"><div class="dm-item-label">Care team members</div><div class="dm-item-who">All roles · Who is treating</div></div><div class="dm-item"><div class="dm-item-label">Flagged conflicts</div><div class="dm-item-who">All roles · System-generated</div></div><div class="dm-item"><div class="dm-item-label">Data provenance / source</div><div class="dm-item-who">All roles · AI scribe, lab, manual</div></div></div><div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:8px">Conflict detection — flag taxonomy</div><div style="font-size:12px;color:var(--text-mid);line-height:1.6;margin-bottom:8px">Conflicts detected by matching flags against a shared ontology of 6 domains. Each flag carries a domain tag and a directionality. System compares flags across practitioners when they share a domain — opposing directionality triggers a conflict.</div><div class="dm-items"><div class="dm-item"><div class="dm-item-label">Energy / load</div><div class="dm-item-who">kcal target · rehab intensity</div></div><div class="dm-item"><div class="dm-item-label">Mobility / restriction</div><div class="dm-item-who">Range · load limit</div></div><div class="dm-item"><div class="dm-item-label">Medication</div><div class="dm-item-who">Drug · dose · interaction</div></div><div class="dm-item"><div class="dm-item-label">Mental health state</div><div class="dm-item-who">Score · trend · flag</div></div><div class="dm-item"><div class="dm-item-label">Nutrition target</div><div class="dm-item-who">Macro · deficit · timing</div></div><div class="dm-item"><div class="dm-item-label">Goal / outcome</div><div class="dm-item-who">Weight · function · psych</div></div></div></div></div></div>
+    <div class="dm-tier"><div class="dm-tier-header"><div><div class="dm-tier-title">Tier 2 — Role-filtered context</div><div class="dm-tier-sub">Visible to specific disciplines. Relevant to their clinical function only.</div></div></div><div class="dm-tier-body"><div class="dm-items"><div class="dm-item"><div class="dm-item-label">Lab results</div><div class="dm-item-who">GP + ordering clinician</div></div><div class="dm-item"><div class="dm-item-label">Functional status</div><div class="dm-item-who">GP + Physio</div></div><div class="dm-item"><div class="dm-item-label">Metabolic markers</div><div class="dm-item-who">GP + Dietitian</div></div><div class="dm-item"><div class="dm-item-label">Pain scores</div><div class="dm-item-who">GP + Physio</div></div><div class="dm-item"><div class="dm-item-label">Psych scores (PHQ/GAD)</div><div class="dm-item-who">GP only — with consent</div></div><div class="dm-item"><div class="dm-item-label">Cross-discipline flags</div><div class="dm-item-who">Relevant recipient role</div></div></div></div></div>
+    <div class="dm-tier"><div class="dm-tier-header"><div><div class="dm-tier-title">Tier 3 — Sensitive / patient-controlled</div><div class="dm-tier-sub">Patient grants per-role consent. Defaults to off — invisible until enabled.</div></div></div><div class="dm-tier-body"><div class="dm-items"><div class="dm-item"><div class="dm-item-label">Psych diagnosis detail</div><div class="dm-item-who">Patient consent required</div></div><div class="dm-item"><div class="dm-item-label">Substance use history</div><div class="dm-item-who">Patient consent required</div></div><div class="dm-item"><div class="dm-item-label">Reproductive/sexual health</div><div class="dm-item-who">Patient consent required</div></div><div class="dm-item"><div class="dm-item-label">Legal/forensic history</div><div class="dm-item-who">Patient consent required</div></div><div class="dm-item"><div class="dm-item-label">Social disclosures</div><div class="dm-item-who">Originating clinician only</div></div></div></div></div>
+    <div class="dm-tier"><div class="dm-tier-header"><div><div class="dm-tier-title">Excluded — never in shared summary</div><div class="dm-tier-sub">Never leaves the originating system, regardless of consent.</div></div></div><div class="dm-tier-body"><div class="dm-items"><div class="dm-item"><div class="dm-item-label">Free-text clinical notes</div><div class="dm-item-who">Not summarised</div></div><div class="dm-item"><div class="dm-item-label">Psych session narrative</div><div class="dm-item-who">Off-platform — separate system</div></div><div class="dm-item"><div class="dm-item-label">Clinical reasoning / DDx</div><div class="dm-item-who">Practitioner-private</div></div><div class="dm-item"><div class="dm-item-label">Billing / admin notes</div><div class="dm-item-who">Not clinical</div></div><div class="dm-item"><div class="dm-item-label">Practitioner opinions</div><div class="dm-item-who">Not summarised</div></div><div class="dm-item"><div class="dm-item-label">Unconfirmed AI extractions</div><div class="dm-item-who">Held in review queue</div></div></div></div></div>
+  </div>
+  <div class="card"><div class="card-header"><div class="card-title">Information architecture principles</div></div><div class="card-body"><div class="data-row"><div class="data-key" style="min-width:180px">Structured facts only</div><div class="data-val" style="text-align:left;font-weight:400;color:var(--text-mid)">The shared layer contains discrete structured data only. No free-text prose. Removes the entire surface area for defensive narrative.</div></div><div class="data-row"><div class="data-key" style="min-width:180px">Flags, not transcripts</div><div class="data-val" style="text-align:left;font-weight:400;color:var(--text-mid)">Cross-discipline communication uses structured flags. The flag travels; the session does not.</div></div><div class="data-row"><div class="data-key" style="min-width:180px">Patient as controller</div><div class="data-val" style="text-align:left;font-weight:400;color:var(--text-mid)">Tier 3 items default to off. Patient can grant or revoke consent per item, per practitioner, at any time.</div></div><div class="data-row"><div class="data-key" style="min-width:180px">Treating relationship gate</div><div class="data-val" style="text-align:left;font-weight:400;color:var(--text-mid)">Access requires an active treating relationship. Auto-removed after 90 days of no contact.</div></div></div></div>
+</div>
+
+<!-- ═══ PERMISSIONS ═══ -->
+<div class="page" id="page-permissions">
+  <div class="summary-header"><div class="summary-title"><h1>Permission Model</h1><p>Who sees what — by data type and practitioner role</p></div></div>
+  <div class="card" style="margin-bottom:16px"><div class="card-body" style="padding:0"><table class="matrix-table"><thead><tr><th style="min-width:200px">Data type</th><th>GP</th><th>Physio</th><th>Psychologist</th><th>Dietitian</th></tr></thead><tbody>
+    <tr><td><strong>Active diagnoses</strong></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td></tr>
+    <tr><td><strong>Medications &amp; allergies</strong></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td></tr>
+    <tr><td><strong>Care team &amp; last contact</strong></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td></tr>
+    <tr><td><strong>Flagged conflicts</strong></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td></tr>
+    <tr><td><strong>Data provenance / AI source</strong></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td></tr>
+    <tr><td><strong>Lab / investigation results</strong></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-consent">C</span></td></tr>
+    <tr><td><strong>Functional / pain scores</strong></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-no">–</span></td></tr>
+    <tr><td><strong>Metabolic markers (BMI, HbA1c)</strong></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-yes">✓</span></td></tr>
+    <tr><td><strong>PHQ-9 / GAD-7 scores</strong></td><td><span class="perm-check perm-consent">C</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-no">–</span></td></tr>
+    <tr><td><strong>Cross-discipline clinical flags</strong></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td><td><span class="perm-check perm-yes">✓</span></td></tr>
+    <tr><td><strong>Psych diagnosis detail</strong></td><td><span class="perm-check perm-consent">C</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-consent">C</span></td><td><span class="perm-check perm-no">–</span></td></tr>
+    <tr><td><strong>Psych session narrative</strong><br><span style="font-size:11px;color:var(--text-muted)">Off-platform — stored in separate clinical record</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-no">–</span></td></tr>
+    <tr><td><strong>Free-text clinical notes</strong><br><span style="font-size:11px;color:var(--text-muted)">Excluded by design</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-no">–</span></td><td><span class="perm-check perm-no">–</span></td></tr>
+  </tbody></table></div></div>
+  <div class="section-grid">
+    <div class="card"><div class="card-header"><div class="card-title">Legend</div></div><div class="card-body"><div class="data-row"><div class="data-key"><span class="perm-check perm-yes" style="display:inline-flex">✓</span></div><div class="data-val" style="text-align:left;font-weight:400;color:var(--text-mid)">Visible by default — part of treating role</div></div><div class="data-row"><div class="data-key"><span class="perm-check perm-consent" style="display:inline-flex">C</span></div><div class="data-val" style="text-align:left;font-weight:400;color:var(--text-mid)">Visible with explicit patient consent</div></div><div class="data-row"><div class="data-key"><span class="perm-check perm-no" style="display:inline-flex">–</span></div><div class="data-val" style="text-align:left;font-weight:400;color:var(--text-mid)">Not visible — outside discipline scope</div></div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Access rules</div></div><div class="card-body"><div class="data-row"><div class="data-key">Access gate</div><div class="data-val" style="text-align:left;font-weight:400;font-size:12px;color:var(--text-mid)">Active treating relationship required</div></div><div class="data-row"><div class="data-key">Expiry</div><div class="data-val" style="text-align:left;font-weight:400;font-size:12px;color:var(--text-mid)">Auto-removed after 90 days no contact</div></div><div class="data-row"><div class="data-key">Consent</div><div class="data-val" style="text-align:left;font-weight:400;font-size:12px;color:var(--text-mid)">Granular per-field, per-practitioner</div></div><div class="data-row"><div class="data-key">Audit</div><div class="data-val" style="text-align:left;font-weight:400;font-size:12px;color:var(--text-mid)">All access logged, patient-visible</div></div></div></div>
+  </div>
+</div>
+
+<!-- ═══ ANTI-CYA ═══ -->
+<div class="page" id="page-cya">
+  <div class="summary-header"><div class="summary-title"><h1>Anti-CYA Design</h1><p>How this system structurally prevents defensive documentation</p></div></div>
+  <div class="alert-row info" style="margin-bottom:24px"><svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3.5M7 10v.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><div>CYA documentation happens when clinicians write for lawyers, not patients. The shared layer must make this structurally impossible — not just discouraged.</div></div>
+  <div class="principle-card"><div class="principle-num">1</div><div><div class="principle-title">No free text in the shared layer</div><div class="principle-body">The shared summary contains only structured, discrete data. No free-text field exists. A practitioner who wants to say "patient is non-compliant" simply cannot — the field doesn't exist.</div></div></div>
+  <div class="principle-card"><div class="principle-num">2</div><div><div class="principle-title">Flags replace opinions</div><div class="principle-body">Cross-discipline communication uses structured flags with a domain and directionality. The template constrains language — a flag cannot contain "I documented this in case..." — it can only describe a clinical fact.</div></div></div>
+  <div class="principle-card"><div class="principle-num">3</div><div><div class="principle-title">Authorship is visible and permanent</div><div class="principle-body">Every item shows who flagged it and when. Practitioners cannot anonymously add liability-shifting statements. Permanence and attribution make CYA notes a reputational risk rather than a safe harbour.</div></div></div>
+  <div class="principle-card"><div class="principle-num">4</div><div><div class="principle-title">The summary is synthesised, not aggregated</div><div class="principle-body">Capsule synthesises — pulling structured data into a unified model. A GP cannot see the physio's reasoning or the psychologist's uncertainty. They see clinical facts. This prevents knowledge of another clinician's documentation from influencing one's own notes.</div></div></div>
+  <div class="principle-card"><div class="principle-num">5</div><div><div class="principle-title">Psychological safety for honest clinical communication</div><div class="principle-body">Psychologists can share a clinical flag without exposing session content that might be misread out of context. The system reduces the cost of honest communication — CYA notes are often a response to feeling exposed.</div></div></div>
+  <div class="principle-card"><div class="principle-num">6</div><div><div class="principle-title">Conflicts are system-detected, not practitioner-reported</div><div class="principle-body">Conflicts surface based on clinical logic — opposing directionality on a shared domain — not interpersonal dynamics. Neither practitioner has to report the other. Practitioners are not incentivised to document the failure of others.</div></div></div>
+</div>
+
+<!-- ═══ PATIENT PORTAL ═══ -->
+<div class="page" id="page-portal">
+  <!-- Portal has its own visual treatment — patient-facing, not clinician-facing -->
+  <div style="background:linear-gradient(135deg,#ECEFFE 0%,#F0EDFE 100%);border-radius:var(--r);padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:20px">
+    <div>
+      <div style="font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--purple);margin-bottom:6px">Your health portal</div>
+      <h1 style="font-size:19px;font-weight:500;letter-spacing:-.3px;margin-bottom:4px">Hello, Katie</h1>
+      <p style="font-size:12.5px;color:var(--text-mid)">You control what your care team can see. This is your view — not your practitioners'.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+      <div style="font-size:11px;color:var(--text-muted)">Last updated by you</div>
+      <div style="font-size:13px;font-weight:500;color:var(--text)">8 Mar 2026 · 08:52</div>
+      <div style="font-size:11px;color:var(--text-muted)">4 practitioners have access</div>
+    </div>
+  </div>
+
+  <!-- Your care team -->
+  <div class="section-grid">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Your care team</div></div>
+      <div class="card-body">
+        <div class="practitioner-row">
+          <div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">JT</div>
+          <div class="prac-info"><div class="prac-name">Dr. Jacob Tait</div><div class="prac-role">GP · Lead clinician</div></div>
+          <div style="font-size:11px;color:#2A7A4A;font-weight:500">Active</div>
+        </div>
+        <div class="practitioner-row">
+          <div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">TK</div>
+          <div class="prac-info"><div class="prac-name">Tom Kelly</div><div class="prac-role">Physiotherapist</div></div>
+          <div style="font-size:11px;color:#2A7A4A;font-weight:500">Active</div>
+        </div>
+        <div class="practitioner-row">
+          <div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">YL</div>
+          <div class="prac-info"><div class="prac-name">Dr. Yu Liu</div><div class="prac-role">Psychologist</div></div>
+          <div style="font-size:11px;color:#2A7A4A;font-weight:500">Active</div>
+        </div>
+        <div class="practitioner-row">
+          <div class="prac-avatar" style="background:#F2F3F6;color:#5A6080">WM</div>
+          <div class="prac-info"><div class="prac-name">Waleed Mussa</div><div class="prac-role">Dietitian</div></div>
+          <div style="font-size:11px;color:#2A7A4A;font-weight:500">Active</div>
+        </div>
+        <div class="practitioner-row" style="opacity:.5">
+          <div class="prac-avatar" style="background:#F5F6FA;color:#9298B0;border:1px dashed #C8CCDF">JO</div>
+          <div class="prac-info"><div class="prac-name" style="color:var(--text-muted)">Dr. James Okafor</div><div class="prac-role">GP Locum</div></div>
+          <div style="font-size:11px;color:#B03040;font-weight:500">Expired</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- What your team can see right now -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">What your team can see</div></div>
+      <div class="card-body">
+        <div class="data-row"><div class="data-key">Active conditions</div><div class="data-val normal">All practitioners</div></div>
+        <div class="data-row"><div class="data-key">Medications</div><div class="data-val normal">All practitioners</div></div>
+        <div class="data-row"><div class="data-key">Allergies</div><div class="data-val normal">All practitioners</div></div>
+        <div class="data-row"><div class="data-key">Lab results</div><div class="data-val normal">GP only</div></div>
+        <div class="data-row"><div class="data-key">Mental health scores</div><div class="data-val normal">GP (you enabled this)</div></div>
+        <div class="data-row"><div class="data-key">Session content</div><div class="data-val" style="color:var(--text-muted)">No-one — off platform</div></div>
+        <div class="data-row"><div class="data-key">Psych diagnosis detail</div><div class="data-val" style="color:var(--text-muted)">Not shared — off by default</div></div>
+        <div class="data-row"><div class="data-key">Substance use history</div><div class="data-val" style="color:var(--text-muted)">Not shared — off by default</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Consent controls -->
+  <div class="card" style="margin-top:20px">
+    <div class="card-header">
+      <div class="card-title">Your sharing preferences</div>
+      <div style="font-size:11.5px;color:var(--text-muted)">You can change these at any time</div>
+    </div>
+    <div class="card-body" style="padding-top:4px">
+      <div class="consent-row">
+        <div>
+          <div class="consent-label">Mental health scores (PHQ-9, GAD-7) → GP</div>
+          <div class="consent-desc">Dr. Mehta can see your scores from Dr. Rosen's assessments — not session content, just the numbers</div>
+        </div>
+        <label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+      </div>
+      <div class="consent-row">
+        <div>
+          <div class="consent-label">Psychologist's care coordination flags → all practitioners</div>
+          <div class="consent-desc">Dr. Rosen can share brief clinical notes (e.g. "anxiety relevant to exercise") with your team — not session content</div>
+        </div>
+        <label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+      </div>
+      <div class="consent-row">
+        <div>
+          <div class="consent-label">Full lab results → Dietitian</div>
+          <div class="consent-desc">Waleed Mussa currently sees metabolic markers only. Enable to share your full pathology results with him</div>
+        </div>
+        <label class="toggle"><input type="checkbox"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+      </div>
+      <div class="consent-row">
+        <div>
+          <div class="consent-label">Psych diagnosis detail → GP</div>
+          <div class="consent-desc">Share Dr. Rosen's formal diagnosis with Dr. Mehta. This is separate from session content, which is never shared</div>
+        </div>
+        <label class="toggle"><input type="checkbox"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+      </div>
+      <div class="consent-row" style="border-bottom:none">
+        <div>
+          <div class="consent-label">Substance use history → GP</div>
+          <div class="consent-desc">Off by default. Enable only if you want Dr. Mehta to have this context</div>
+        </div>
+        <label class="toggle"><input type="checkbox"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Access log + message -->
+  <div class="section-grid" style="margin-top:20px">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Recent access to your record</div></div>
+      <div class="card-body">
+        <div class="activity-item" style="padding:8px 0">
+          <div class="activity-avatar" style="background:#F2F3F6;color:#5A6080;width:26px;height:26px;font-size:9px">JT</div>
+          <div class="activity-body">
+            <div class="activity-title" style="font-size:12.5px">Dr. Jacob Tait viewed your summary</div>
+            <div class="activity-time">18 Mar 2026 · 09:14</div>
+          </div>
+        </div>
+        <div class="activity-item" style="padding:8px 0">
+          <div class="activity-avatar" style="background:#F2F3F6;color:#5A6080;width:26px;height:26px;font-size:9px">WM</div>
+          <div class="activity-body">
+            <div class="activity-title" style="font-size:12.5px">Waleed Mussa viewed your summary</div>
+            <div class="activity-time">11 Mar 2026 · 11:30</div>
+          </div>
+        </div>
+        <div class="activity-item" style="padding:8px 0">
+          <div class="activity-avatar" style="background:#FCEAEC;color:#B03040;width:26px;height:26px;font-size:9px">⚠</div>
+          <div class="activity-body">
+            <div class="activity-title" style="font-size:12.5px">Emergency access — Dr. Elise Dumont</div>
+            <div class="activity-desc" style="font-size:11.5px;color:var(--text-mid)">Medications &amp; allergies accessed at Royal Melbourne ED. Reason logged.</div>
+            <div class="activity-time">2 Feb 2026 · 02:38</div>
+          </div>
+        </div>
+        <div style="padding-top:8px;font-size:11.5px;color:var(--text-muted)">All access to your record is logged. <span style="color:var(--role-accent);cursor:pointer;font-weight:500" onclick="showPage('activitylog')">View full history →</span></div>
+      </div>
+    </div>
+
+    <!-- Message your care team -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">Message your care team</div></div>
+      <div class="card-body">
+        <div class="alert-row info" style="margin-bottom:14px">
+          <svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3.5M7 10v.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <div>Instead of relaying information between practitioners yourself, you can send a note here. It will be added to your shared summary as a patient-reported flag.</div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="display:block;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:6px">Send to</label>
+          <select class="form-select" style="font-size:12.5px">
+            <option>All treating practitioners</option>
+            <option>Dr. Jacob Tait (GP)</option>
+            <option>Tom Kelly (Physio)</option>
+            <option>Dr. Yu Liu (Psych)</option>
+            <option>Waleed Mussa (Dietitian)</option>
+          </select>
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="display:block;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:6px">Your message</label>
+          <textarea class="form-textarea" placeholder="e.g. My physio and dietitian gave me different advice about what to eat during rehab — I'm confused about what to do" style="min-height:80px;font-size:12.5px" id="patient-msg"></textarea>
+        </div>
+        <button class="btn-primary" style="width:100%;justify-content:center" onclick="sendPatientMessage()">Send to care team</button>
+        <div id="msg-sent" style="display:none;margin-top:10px;font-size:12px;color:#2A7A4A;text-align:center">✓ Message added to your shared summary</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conflicts visible to patient -->
+  <div class="card" style="margin-top:20px">
+    <div class="card-header"><div class="card-title">Active coordination notes from your team</div></div>
+    <div class="card-body" style="padding-top:8px">
+      <div class="alert-row warn">
+        <svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L13 12H1L7 1.5Z" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M7 5.5v3M7 10v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <div><strong>Your physio and dietitian gave different advice about food during rehab.</strong> Your GP has flagged this for the team to resolve. You don't need to relay this yourself — they can see it.</div>
+      </div>
+      <div class="alert-row info">
+        <svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3.5M7 10v.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <div><strong>Your spinal restriction is visible to all practitioners.</strong> Any clinician who might refer you for exercise can see this — you don't need to remind them.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </div><!-- end content -->
+</div><!-- end main -->
+</div><!-- end shell -->
+
+<!-- ══ Heidi AI Scribe Review Modal ══ -->
+<div class="modal-overlay" id="scribe-modal">
+  <div class="modal" style="width:560px">
+    <div class="modal-header"><h3>Review AI extractions — Heidi scribe · 18 Mar 2026</h3><p>Confirm or reject each value before it enters the shared layer. Unconfirmed values are never visible to other practitioners.</p></div>
+    <div class="modal-body" style="padding:0 24px">
+      <div class="extraction-row"><div class="extraction-field">Blood pressure</div><div class="extraction-value"><div class="extraction-raw">"…BP was 134 over 86 today, up slightly from last visit…"</div><div class="extraction-parsed">134/86 mmHg</div><div class="extraction-context">Context: routine review · Tier 2 (GP access)</div></div><div class="extraction-actions"><span class="extraction-confidence conf-high">95%</span><button class="btn-confirm" onclick="confirmExtraction(this)">Confirm</button><button class="btn-reject" onclick="rejectExtraction(this)">Edit</button></div></div>
+      <div class="extraction-row"><div class="extraction-field">BMI</div><div class="extraction-value"><div class="extraction-raw">"…her BMI has come down to 34.2, she's lost about 2 kilos…"</div><div class="extraction-parsed">34.2 kg/m² · weight −2.1 kg trend</div><div class="extraction-context">Context: metabolic review · Tier 2 (GP + Dietitian)</div></div><div class="extraction-actions"><span class="extraction-confidence conf-high">91%</span><button class="btn-confirm" onclick="confirmExtraction(this)">Confirm</button><button class="btn-reject" onclick="rejectExtraction(this)">Edit</button></div></div>
+      <div class="extraction-row"><div class="extraction-field">Mobility flag</div><div class="extraction-value"><div class="extraction-raw">"…Chris has still got her off loaded flexion, so bear that in mind for any referrals…"</div><div class="extraction-parsed">Mobility restriction: loaded spinal flexion — active</div><div class="extraction-context">Suggested flag: Mobility / restriction · Tier 1 (all practitioners)</div></div><div class="extraction-actions"><span class="extraction-confidence conf-mid">74%</span><button class="btn-confirm" onclick="confirmExtraction(this)">Confirm</button><button class="btn-reject" onclick="rejectExtraction(this)">Edit</button></div></div>
+      <div style="padding:12px 0;font-size:12px;color:var(--text-muted);border-top:1px solid var(--border);margin-top:4px" id="scribe-pending-msg">2 of 3 extractions pending confirmation · Values not confirmed will not appear in the shared summary</div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost" onclick="closeScribeModal()">Review later</button><button class="btn-primary" onclick="closeScribeModal()">Confirm all &amp; publish</button></div>
+  </div>
+</div>
+
+<!-- ══ Break Glass Modal ══ -->
+<div class="modal-overlay" id="bg-modal">
+  <div class="modal" style="width:440px">
+    <div class="modal-header"><h3 style="color:#B03040">Break glass — emergency access</h3><p>Override access controls. This action is permanent, logged, and the patient will be notified.</p></div>
+    <div class="modal-body">
+      <div class="bg-warning-banner"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px"><path d="M8 2L14.5 13.5H1.5L8 2Z" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M8 6.5v3.5M8 12v.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><div><strong>This creates an immutable audit record.</strong> The patient will be notified within 24 hours. Use only in a genuine clinical emergency.</div></div>
+      <div class="form-group"><label class="form-label">Emergency type</label><select class="form-select"><option>Patient presented unconscious / incapacitated</option><option>Immediate risk to life — medication required</option><option>Allergy check — patient cannot consent</option><option>Other clinical emergency</option></select></div>
+      <div class="form-group"><label class="form-label">Reason for access (required)</label><textarea class="form-textarea" placeholder="Describe the clinical emergency…" style="min-height:80px"></textarea></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Data accessed</label><div class="radio-group"><label class="radio-item selected"><input type="radio" name="bg-scope" checked><div><div class="radio-item-label">Medications &amp; allergies only</div><div class="radio-item-desc">Minimum necessary — recommended for most emergencies</div></div></label><label class="radio-item"><input type="radio" name="bg-scope"><div><div class="radio-item-label">Full shared clinical summary</div><div class="radio-item-desc">All Tier 1 and Tier 2 data</div></div></label></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost" onclick="closeBreakGlass()">Cancel</button><button class="btn-danger" onclick="confirmBreakGlass()">Confirm emergency access</button></div>
+  </div>
+</div>
+
+<!-- ══ Add Flag Modal ══ -->
+<div class="modal-overlay" id="flag-modal">
+  <div class="modal" style="width:520px">
+    <div class="modal-header"><h3>Add clinical flag</h3><p>Structured facts only. The system checks your flag against existing entries in real time.</p></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Domain</label><select class="form-select" id="flag-domain" onchange="checkConflict()"><option value="">Select domain…</option><option value="energy">Energy / load</option><option value="mobility">Mobility / restriction</option><option value="medication">Medication interaction</option><option value="mental">Mental health — relevant to treatment</option><option value="nutrition">Nutrition target</option><option value="goal">Goal / outcome</option></select></div>
+      <div class="form-group"><label class="form-label">Directionality</label><div class="segmented" id="dir-seg"><button class="seg-btn active" onclick="setDir(this,'increase')">Increase / promote</button><button class="seg-btn" onclick="setDir(this,'restrict')">Restrict / reduce</button><button class="seg-btn" onclick="setDir(this,'monitor')">Monitor / flag only</button></div></div>
+      <div id="conflict-check" style="display:none;margin-bottom:16px">
+        <div id="conflict-none" class="alert-row" style="border-left-color:#2A7A4A;display:none"><svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#2A7A4A" stroke-width="1.2"/><path d="M4.5 7l2 2 3-3" stroke="#2A7A4A" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="color:#2A7A4A">No conflicts detected with existing flags in this domain.</div></div>
+        <div id="conflict-found" style="display:none">
+          <div class="alert-row danger" style="margin-bottom:8px"><svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L13 12H1L7 1.5Z" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M7 5.5v3M7 10v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><div><strong>Conflict detected before submission.</strong> <span id="conflict-detail"></span></div></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:12px;color:var(--text-mid)"><div style="font-weight:500;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)">Existing flag</div><div id="conflict-existing"></div></div>
+          <div style="font-size:11.5px;color:var(--text-muted);margin-top:8px">Submitting will surface this conflict to all treating practitioners automatically. Neither practitioner is flagged as wrong — it's presented as a coordination item.</div>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Brief clinical note <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-muted)">(optional — max 120 chars)</span></label><textarea class="form-textarea" maxlength="120" placeholder="e.g. Loaded spinal flexion restricted — inform any exercise referral" style="min-height:60px" id="flag-note-input" oninput="updateFlagCount(this)"></textarea><div style="font-size:11px;color:var(--text-muted);text-align:right;margin-top:4px"><span id="flag-char-count">0</span>/120</div></div>
+      <div class="form-group"><label class="form-label">Visible to</label><div class="segmented" id="vis-seg"><button class="seg-btn active" onclick="setVis(this,'all')">All treating practitioners</button><button class="seg-btn" onclick="setVis(this,'gp')">GP only</button><button class="seg-btn" onclick="setVis(this,'relevant')">Relevant disciplines</button></div></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Sensitivity</label><div class="radio-group"><label class="radio-item selected"><input type="radio" name="sensitivity" checked><div><div class="radio-item-label">Standard</div><div class="radio-item-desc">Visible immediately to selected practitioners</div></div></label><label class="radio-item"><input type="radio" name="sensitivity"><div><div class="radio-item-label">Requires patient consent</div><div class="radio-item-desc">Patient must approve before recipients can see this flag</div></div></label></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost" onclick="closeAddFlagModal()">Cancel</button><button class="btn-primary" id="submit-flag-btn" onclick="submitFlag()">Submit flag</button></div>
+  </div>
+</div>
+
+<!-- ══ Consent Modal ══ -->
+<div class="modal-overlay" id="consent-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Consent settings — Katie Robinson</h3><p>Patient controls what sensitive information is shared, with whom. All items default to off until configured — at appointment or via patient portal.</p></div>
+    <div class="modal-body">
+      <div class="alert-row info" style="margin-bottom:14px"><svg class="alert-row-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3.5M7 10v.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><div>Patient last updated preferences on <strong>8 Mar 2026</strong>. Items marked off are invisible to those practitioners — not hidden, absent.</div></div>
+      <div class="consent-row"><div><div class="consent-label">Mental health scores (PHQ-9, GAD-7) → GP</div><div class="consent-desc">Dr. Jacob Tait · Consented 8 Mar</div></div><label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+      <div class="consent-row"><div><div class="consent-label">Psychologist clinical flags → all practitioners</div><div class="consent-desc">Structured flags only, not session content · Consented 8 Mar</div></div><label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+      <div class="consent-row"><div><div class="consent-label">Psych diagnosis detail → GP</div><div class="consent-desc">Not yet configured — GP cannot see until enabled</div></div><label class="toggle"><input type="checkbox"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+      <div class="consent-row"><div><div class="consent-label">Metabolic markers → Dietitian</div><div class="consent-desc">HbA1c, BMI, LDL-C · Consented 8 Mar</div></div><label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+      <div class="consent-row"><div><div class="consent-label">Lab results (full) → Dietitian</div><div class="consent-desc">Not yet configured — dietitian sees metabolic markers only</div></div><label class="toggle"><input type="checkbox"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+      <div class="consent-row"><div><div class="consent-label">Substance use history → GP</div><div class="consent-desc">Not yet configured — defaults off per Tier 3 policy</div></div><label class="toggle"><input type="checkbox"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+    </div>
+    <div class="modal-footer"><button class="btn-ghost" onclick="closeModal()">Cancel</button><button class="btn-primary" onclick="closeModal()">Save consent preferences</button></div>
+  </div>
+</div>
+
+<script>
+let currentRole = 'gp';
+const roleConfig = {
+  gp:       { label:'Viewing as: Dr. Jacob Tait (GP)',      pillClass:'gp',       bannerText:'<strong>GP view</strong> — Shared facts, conflicts, and your role-filtered data. Mental health content visible only with patient consent.' },
+  physio:   { label:'Viewing as: Tom Kelly (Physiotherapist)', pillClass:'physio', bannerText:'<strong>Physiotherapist view</strong> — Shared facts, functional status, and conflict flags relevant to rehabilitation. Lab and mental health content not accessible.' },
+  psych:    { label:'Viewing as: Dr. Yu Liu (Psychologist)', pillClass:'psych',  bannerText:'<strong>Psychologist view</strong> — Shared facts and clinical context from team. Session content stays in your practice system. Raise structured flags to inform the team.' },
+  dietitian:{ label:'Viewing as: Waleed Mussa (Dietitian)',     pillClass:'dietitian', bannerText:'<strong>Dietitian view</strong> — Shared facts, metabolic markers, and coordination alerts. Mental health and full lab content not accessible.' }
+};
+const pages = ['summary','activitylog','datamodel','permissions','cya','portal'];
+
+function setRole(role) {
+  currentRole = role;
+  const cfg = roleConfig[role];
+  document.querySelector('.shell').setAttribute('data-role', role);
+  document.getElementById('viewer-pill').className = 'viewer-pill ' + cfg.pillClass;
+  document.getElementById('viewer-label').textContent = cfg.label;
+  document.getElementById('vis-banner').className = 'visibility-banner role';
+  document.getElementById('vis-banner-text').innerHTML = cfg.bannerText;
+  ['gp','physio','psych','dietitian'].forEach(r => {
+    const el = document.getElementById('rs-' + r);
+    if (el) el.style.display = (r === role) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  const roleIndex = {gp:0,physio:1,psych:2,dietitian:3};
+  document.querySelectorAll('.role-btn')[roleIndex[role]].classList.add('active');
+}
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const idx = pages.indexOf(page);
+  if (idx >= 0) document.querySelectorAll('.nav-item')[idx].classList.add('active');
+  const isPortal = page === 'portal';
+  document.getElementById('role-switcher').style.display = (page === 'summary') ? 'block' : 'none';
+
+  // Portal uses a neutral slate palette — not tied to any practitioner role
+  const shell = document.querySelector('.shell');
+  const viewerPill = document.getElementById('viewer-pill');
+  if (isPortal) {
+    shell.setAttribute('data-role', 'portal');
+    viewerPill.style.display = 'none';
+  } else {
+    shell.setAttribute('data-role', currentRole);
+    viewerPill.style.display = 'flex';
+  }
+
+  // Hide clinician-only topbar actions on patient portal
+  ['scribe-btn','overflow-wrap'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.visibility = isPortal ? 'hidden' : 'visible';
+  });
+  document.querySelectorAll('.btn-add-flag').forEach(b => b.style.visibility = isPortal ? 'hidden' : 'visible');
+  document.querySelector('.btn-break-glass').style.visibility = isPortal ? 'hidden' : 'visible';
+  closeOverflow();
+}
+
+function openModal()  { document.getElementById('consent-modal').classList.add('open'); }
+function closeModal() { document.getElementById('consent-modal').classList.remove('open'); }
+document.getElementById('consent-modal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+
+function openBreakGlass()  { document.getElementById('bg-modal').classList.add('open'); }
+function closeBreakGlass() { document.getElementById('bg-modal').classList.remove('open'); }
+function confirmBreakGlass(){ closeBreakGlass(); showPage('activitylog'); }
+document.getElementById('bg-modal').addEventListener('click', function(e){ if(e.target===this) closeBreakGlass(); });
+
+function openAddFlagModal() {
+  document.getElementById('flag-domain').value = '';
+  document.getElementById('flag-domain').style.borderColor = '';
+  document.getElementById('conflict-check').style.display = 'none';
+  document.getElementById('flag-char-count').textContent = '0';
+  const ni = document.getElementById('flag-note-input');
+  if (ni) ni.value = '';
+  currentDir = 'increase';
+  document.querySelectorAll('#dir-seg .seg-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+  document.getElementById('flag-modal').classList.add('open');
+}
+function closeAddFlagModal() { document.getElementById('flag-modal').classList.remove('open'); }
+document.getElementById('flag-modal').addEventListener('click', function(e){ if(e.target===this) closeAddFlagModal(); });
+
+function openScribeModal()  { document.getElementById('scribe-modal').classList.add('open'); }
+function closeScribeModal() {
+  document.getElementById('scribe-modal').classList.remove('open');
+  const badge = document.getElementById('scribe-badge');
+  if (badge) badge.style.display = 'none';
+}
+document.getElementById('scribe-modal').addEventListener('click', function(e){ if(e.target===this) closeScribeModal(); });
+
+function toggleOverflow() {
+  const m = document.getElementById('overflow-menu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+function closeOverflow() {
+  const m = document.getElementById('overflow-menu');
+  if (m) m.style.display = 'none';
+}
+document.addEventListener('click', function(e){
+  const w = document.getElementById('overflow-wrap');
+  if (w && !w.contains(e.target)) closeOverflow();
+});
+
+function toggleEmptyState() {
+  const p = document.getElementById('empty-state-panel');
+  p.style.display = (p.style.display === 'none' || !p.style.display) ? 'block' : 'none';
+}
+
+function setVis(btn, val) {
+  btn.closest('.segmented').querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function updateFlagCount(el) {
+  document.getElementById('flag-char-count').textContent = el.value.length;
+}
+
+const existingFlags = {
+  energy:    { practitioner:'Tom Kelly (Physio)', direction:'increase', note:'High-load rehab active — increased caloric intake recommended to support recovery. 4 Mar 2026.' },
+  nutrition: { practitioner:'Waleed Mussa (Dietitian)', direction:'restrict', note:'1600 kcal Mediterranean deficit plan active. Weight loss target 0.5 kg/week. 11 Mar 2026.' },
+  mobility:  { practitioner:'Tom Kelly (Physio)', direction:'restrict', note:'Loaded spinal flexion restricted — no progressive loading above 40% BW. 12 Mar 2026.' },
+  mental:    { practitioner:'Dr. Yu Liu (Psych)', direction:'monitor', note:'Anxiety intersecting with pain — stress-pain amplification active. Caution with aggressive escalation. 10 Mar 2026.' }
+};
+let currentDir = 'increase';
+
+function setDir(btn, dir) {
+  currentDir = dir;
+  document.querySelectorAll('#dir-seg .seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  checkConflict();
+}
+
+function checkConflict() {
+  const domain = document.getElementById('flag-domain').value;
+  const panel = document.getElementById('conflict-check');
+  const noneEl = document.getElementById('conflict-none');
+  const foundEl = document.getElementById('conflict-found');
+  if (!domain) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  const existing = existingFlags[domain];
+  if (!existing) { noneEl.style.display = 'flex'; foundEl.style.display = 'none'; return; }
+  const isConflict = (currentDir==='increase' && existing.direction==='restrict') ||
+                     (currentDir==='restrict'  && existing.direction==='increase');
+  if (isConflict) {
+    noneEl.style.display = 'none';
+    foundEl.style.display = 'block';
+    document.getElementById('conflict-detail').textContent =
+      `Your "${currentDir}" flag on the ${domain.charAt(0).toUpperCase()+domain.slice(1)} domain opposes an existing flag from ${existing.practitioner}.`;
+    document.getElementById('conflict-existing').textContent = existing.note;
+  } else {
+    noneEl.style.display = 'flex';
+    foundEl.style.display = 'none';
+  }
+}
+
+function submitFlag() {
+  const domainEl = document.getElementById('flag-domain');
+  if (!domainEl.value) {
+    domainEl.style.borderColor = '#B03040';
+    setTimeout(() => { domainEl.style.borderColor = ''; }, 2000);
+    return;
+  }
+  const btn = document.getElementById('submit-flag-btn');
+  btn.textContent = 'Submitting…';
+  btn.disabled = true;
+  setTimeout(() => { closeAddFlagModal(); btn.textContent = 'Submit flag'; btn.disabled = false; }, 800);
+}
+
+function confirmExtraction(btn) {
+  const row = btn.closest('.extraction-row');
+  row.style.opacity = '0.45';
+  row.querySelector('.extraction-parsed').style.color = '#2A7A4A';
+  btn.textContent = 'Confirmed';
+  btn.disabled = true;
+  btn.nextElementSibling.style.display = 'none';
+  updateScribeBadge();
+}
+function rejectExtraction(btn) {
+  const row = btn.closest('.extraction-row');
+  row.style.opacity = '0.45';
+  btn.textContent = 'Removed';
+  btn.disabled = true;
+  btn.previousElementSibling.style.display = 'none';
+  updateScribeBadge();
+}
+function updateScribeBadge() {
+  const pending = document.querySelectorAll('.extraction-row .btn-confirm:not([disabled])').length;
+  const badge = document.getElementById('scribe-badge');
+  if (!badge) return;
+  badge.style.display = pending > 0 ? 'flex' : 'none';
+  if (pending > 0) badge.textContent = pending;
+  const msg = document.getElementById('scribe-pending-msg');
+  if (msg) msg.textContent = pending + ' of 3 extractions pending confirmation · Values not confirmed will not appear in the shared summary';
+}
+
+document.addEventListener('click', function(e) {
+  const item = e.target.closest('.radio-item');
+  if (!item) return;
+  const group = item.closest('.radio-group');
+  if (!group) return;
+  group.querySelectorAll('.radio-item').forEach(i => i.classList.remove('selected'));
+  item.classList.add('selected');
+  const radio = item.querySelector('input[type=radio]');
+  if (radio) radio.checked = true;
+});
+
+function sendPatientMessage() {
+  const msg = document.getElementById('patient-msg');
+  if (!msg || !msg.value.trim()) {
+    msg.style.borderColor = '#B03040';
+    setTimeout(() => { msg.style.borderColor = ''; }, 2000);
+    return;
+  }
+  msg.value = '';
+  const sent = document.getElementById('msg-sent');
+  if (sent) { sent.style.display = 'block'; setTimeout(() => { sent.style.display = 'none'; }, 3000); }
+}
+
+showPage('summary');
+setRole('gp');
+
+
+</script>
+</body>
+</html>
